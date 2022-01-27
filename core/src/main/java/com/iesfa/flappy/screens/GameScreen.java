@@ -14,8 +14,6 @@ public class GameScreen extends BaseScreen {
     //Todo alumno: Toda pantalla debe tener una 'escena' que controle los elementos que aparecen en cada
     // pantalla (Podríamos decir que sería nuestro director de escena)
 
-
-
     public GameScreen(MainGame mainGame){
         super(mainGame);
 

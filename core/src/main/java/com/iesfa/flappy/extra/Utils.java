@@ -6,6 +6,10 @@ package com.iesfa.flappy.extra;
 public class Utils {
 
     //Todo: Deberíamos crear variables que definan los tamaños de pantalla
+    public static final int SCREEN_HEIGHT = 800;
+    public static final int SCREEN_WIDTH = 480;
 
     //Todo: Deberíamos crear variables que definan los tamaños de nuestro mundo
+    public static final float WORLD_HEIGTH = 8f ;
+    public static final float WORLD_WIDTH = 4.8f;
 }
