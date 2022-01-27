@@ -1,4 +1,4 @@
-package com.iesfa.flappy.screens.extra;
+package com.iesfa.flappy.extra;
 
 
 //Suele ser necesario tener una clase que se encarge de centralizar todos los datos comunes a los
