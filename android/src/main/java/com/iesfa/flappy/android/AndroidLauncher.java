@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.iesfa.flappy.flappyBirdMain;
+import com.iesfa.flappy.MainGame;
 
 /** Launches the Android application. */
 public class AndroidLauncher extends AndroidApplication {
@@ -12,6 +12,6 @@ public class AndroidLauncher extends AndroidApplication {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration configuration = new AndroidApplicationConfiguration();
-		initialize(new flappyBirdMain(), configuration);
+		initialize(new MainGame(), configuration);
 	}
 }
