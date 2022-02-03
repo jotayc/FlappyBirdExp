@@ -21,4 +21,8 @@ public class Utils {
 
 
 
+    //Identificadores de cuerpos
+    public static final String USER_BIRD = "bird";
+
+
 }

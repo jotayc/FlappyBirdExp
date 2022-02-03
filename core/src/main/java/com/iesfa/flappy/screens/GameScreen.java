@@ -25,24 +25,49 @@ import sun.tools.jar.Main;
 public class GameScreen extends BaseScreen {
 
 
-    //Toda pantalla debe tener una 'escena' que controle los elementos que aparecen en cada
-    // pantalla (Podríamos decir que sería nuestro director de escena)
+
     private Stage stage;
 
     private Image background;
 
     private Bird bird;
 
+    //1.World se encarga de gestionar el mundo físico dentro de nuestro juego
+    private World world;
+
+
     public GameScreen(MainGame mainGame){
         super(mainGame);
 
-        //Inicializamos el stage creando previamente nuestro viewport
+        //2.Creamos el mundo recibiendo dos parametros
+
+
         FitViewport fitViewport = new FitViewport(WORLD_WIDTH,WORLD_HEIGTH);
         this.stage = new Stage(fitViewport);
 
 
+
     }
-    //Creamos un metodo que configure el fondos
+
+
+    //Todo alumno: Crear un método que añada el 'cuerpo' y la 'forma' del suelo
+
+
+    @Override
+    public void show() {
+
+
+        addBackground();
+        Animation<TextureRegion> birdSprite = mainGame.assetManager.getBirdAnimation();
+
+
+        //11.Hay que pasarle el mundo al constructor de Bird para que este configure su física
+        this.bird = new Bird(birdSprite, new Vector2(1.35f ,4.75f ));
+        this.stage.addActor(this.bird);
+
+
+    }
+
     public void addBackground(){
         this.background = new Image(mainGame.assetManager.getBackground());
         this.background.setPosition(0,0);
@@ -51,35 +76,32 @@ public class GameScreen extends BaseScreen {
     }
 
     @Override
-    public void show() {
-
-        //Añadimos el metodo que crea el fondo
-        addBackground();
-        Animation<TextureRegion> birdSprite = mainGame.assetManager.getBirdAnimation();
-        this.bird = new Bird(birdSprite, new Vector2(1.35f ,4.75f ));
-        this.stage.addActor(this.bird);
-
-
-    }
-
-    @Override
     public void render(float delta) {
 
-        //Ordenamos al stage que dibuje.
+        //10.Pedimos a draw que actualice la físca de los actores que tiene adscritos
+
+        //this.world.step(delta,6,2); //Porqué 6 y 2? Por que así lo dice la documentación.
         this.stage.draw();
 
     }
 
     @Override
     public void hide() {
+        //12. Nos acordamos que cuando el usuario no esté jugando (no esté la pantalla activa)
+        //quitamos los recursos de los actores de memoria
 
+        //detach
+
+        //remove
     }
 
     @Override
     public void dispose() {
 
-        //Nos acordamos de eliminar los recursos del stage
+
         this.stage.dispose();
+
+        //3.Nos acordamos de eliminar los recursos de que retiene world
 
     }
 }
