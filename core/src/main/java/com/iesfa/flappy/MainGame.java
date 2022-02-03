@@ -14,13 +14,13 @@ import com.iesfa.flappy.screens.GetReadyScreen;
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class MainGame extends Game {
 
-	//Instancia de la pantalla durante el juego
+
 	public GameScreen gameScreen;
 
-	//Crear instancia de la pantalla de GetReady
+
 	public GetReadyScreen getReadyScreen;
 
-	//Crear instancia de la pantalla de GameOver
+
 	public GameOverScreen gameOverScreen;
 
 	public AssetMan assetManager;
@@ -33,8 +33,7 @@ public class MainGame extends Game {
 		this.gameOverScreen = new GameOverScreen(this);
 		this.getReadyScreen = new GetReadyScreen(this);
 
-		//Scene2d nos ayuda a manejar las diferentes instancias de las diferentes pantallas que
-		//compondrá nuestro juego.
+
 		setScreen(this.gameScreen);
 
 

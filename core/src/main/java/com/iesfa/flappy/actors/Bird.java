@@ -23,49 +23,52 @@ public class Bird extends Actor {
 
     private World world;
 
-    float stateTime;
+    private float stateTime;
 
 
     //5. Creamos el atributo para el cuerpo del pájaro.
-
+    private Body body;
     //6. Creamos el atributo para la forma del pájaro.
-
+    private Fixture fixture;
 
     //4. Modificamos el constructor para pasarle la instancia del mundo físico.
-    public Bird(Animation<TextureRegion> animation, Vector2 position) {
+    public Bird(World world,Animation<TextureRegion> animation, Vector2 position) {
         this.birdAnimation = animation;
         this.position      = position;
-
+        this.world         = world;
         stateTime = 0f;
+        createBody();
+        createFixture();
+
     }
 
     //7. Creamos un método para crear el cuerpo
     public void createBody(){
         //Creamos BodyDef
-
+        BodyDef bodyDef = new BodyDef();
         //Position
-
+        bodyDef.position.set(position);
 
         //tipo
-
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
 
         //createBody de mundo
-
+        this.body = this.world.createBody(bodyDef);
     }
 
     //8. Creamos un método para crear la forma
     public void createFixture(){
         //Shape
-
+        CircleShape circle = new CircleShape();
         //radio
-
+        circle.setRadius(0.3f);
 
         //createFixture
-
+        this.fixture = this.body.createFixture(circle,8);
         //setUserData  --> Utils -> identificadores de cuerpos
-
+        this.fixture.setUserData(Utils.USER_BIRD);
         //dispose
-
+        circle.dispose();
     }
 
 
@@ -77,7 +80,8 @@ public class Bird extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(this.birdAnimation.getKeyFrame(stateTime,true),position.x,position.y, 0.6f,0.5f);
+        setPosition(body.getPosition().x-0.3f, body.getPosition().y-0.25f);
+        batch.draw(this.birdAnimation.getKeyFrame(stateTime,true),getX(),getY(), 0.6f,0.5f);
 
         stateTime += Gdx.graphics.getDeltaTime();
 
@@ -88,8 +92,9 @@ public class Bird extends Actor {
     public void detach(){
 
         //(body) destroyFixture
-
+        this.body.destroyFixture(this.fixture);
         //(world) destroyBody
+        this.world.destroyBody(this.body);
 
     }
 }
