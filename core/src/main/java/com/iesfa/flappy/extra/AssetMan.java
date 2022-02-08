@@ -6,6 +6,8 @@ package com.iesfa.flappy.extra;
 
 import static com.iesfa.flappy.extra.Utils.ATLAS_MAP;
 import static com.iesfa.flappy.extra.Utils.BACKGROUND_IMAGE;
+import static com.iesfa.flappy.extra.Utils.PIPE_DAWN;
+import static com.iesfa.flappy.extra.Utils.PIPE_UP;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -38,5 +40,13 @@ public class AssetMan {
                 textureAtlas.findRegion("bird1"),
                 textureAtlas.findRegion("bird2"),
                 textureAtlas.findRegion("bird3"));
+    }
+
+    public TextureRegion getPipeDownTR() {
+        return  this.textureAtlas.findRegion(PIPE_DAWN);
+    }
+
+    public TextureRegion getPipeUpTR() {
+        return  this.textureAtlas.findRegion(PIPE_UP);
     }
 }

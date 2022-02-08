@@ -10,13 +10,17 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.iesfa.flappy.MainGame;
 import com.iesfa.flappy.actors.Bird;
+import com.iesfa.flappy.actors.Pipes;
 import com.iesfa.flappy.extra.Utils;
 
 import org.w3c.dom.Text;
@@ -33,49 +37,64 @@ public class GameScreen extends BaseScreen {
     private Image background;
 
     private Bird bird;
+    private Pipes pipes;
 
-    //1.World se encarga de gestionar el mundo físico dentro de nuestro juego
     private World world;
 
 
-    //**12** DebugRenderer nos servirá para ver en la pantalla una representación gráfica del mundo físico.
+
     private Box2DDebugRenderer debugRenderer;
     private OrthographicCamera ortCamera;
 
     public GameScreen(MainGame mainGame){
         super(mainGame);
 
-        //2.Creamos el mundo recibiendo dos parametros
+
         this.world = new World(new Vector2(0,-10),true);
 
         FitViewport fitViewport = new FitViewport(WORLD_WIDTH,WORLD_HEIGTH);
         this.stage = new Stage(fitViewport);
 
-        //13. Cargamos la cámara
+
         this.ortCamera = (OrthographicCamera) this.stage.getCamera();
         this.debugRenderer = new Box2DDebugRenderer();
-
 
 
     }
 
 
-    //Todo alumno: Crear un método que añada el 'cuerpo' y la 'forma' del suelo
 
 
     @Override
     public void show() {
 
-
+        addFloor();
         addBackground();
         Animation<TextureRegion> birdSprite = mainGame.assetManager.getBirdAnimation();
+        TextureRegion pipeDownTexture = mainGame.assetManager.getPipeDownTR();
 
-
-        //11.Hay que pasarle el mundo al constructor de Bird para que este configure su física
         this.bird = new Bird(this.world,birdSprite, new Vector2(1.35f ,4.75f ));
+        //Todo 12. Creamos una instancia de Pipes y se lo pasamos al escenario
+        this.pipes = new Pipes(this.world, pipeDownTexture,new Vector2(3.75f,2f));
+
         this.stage.addActor(this.bird);
+        this.stage.addActor(this.pipes);
+    }
 
+    //Todo alumno: Crear un método que añada el techo con la clase EdgeShape
 
+    //Todo alumno: Crear un método que añada el 'cuerpo' y la 'forma' del suelo
+    private void addFloor() {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.position.set(WORLD_WIDTH / 2f, 0.6f);
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        Body body = world.createBody(bodyDef);
+        body.setUserData(USER_FLOOR);
+
+        PolygonShape edge = new PolygonShape();
+        edge.setAsBox(2.3f, 0.5f);
+        body.createFixture(edge, 3);
+        edge.dispose();
     }
 
     public void addBackground(){
@@ -88,8 +107,8 @@ public class GameScreen extends BaseScreen {
     @Override
     public void render(float delta) {
 
-        this.stage.getBatch().setProjectionMatrix(ortCamera.combined);
-        //10.Pedimos a draw que actualice la físca de los actores que tiene adscritos
+        //this.stage.getBatch().setProjectionMatrix(ortCamera.combined);
+
         this.stage.act();
         this.world.step(delta,6,2); //Porqué 6 y 2? Por que así lo dice la documentación.
         this.stage.draw();
@@ -102,22 +121,20 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public void hide() {
-        //12. Nos acordamos que cuando el usuario no esté jugando (no esté la pantalla activa)
-        //quitamos los recursos de los actores de memoria
-
         //detach
         this.bird.detach();
         //remove
         this.bird.remove();
+
+        //Todo 13. liberamos el objeto pipe
+        this.pipes.detach();
+        this.pipes.remove();
     }
 
     @Override
     public void dispose() {
 
-
         this.stage.dispose();
-
-        //3.Nos acordamos de eliminar los recursos de que retiene world
         this.world.dispose();
 
     }

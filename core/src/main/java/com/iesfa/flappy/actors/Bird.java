@@ -1,6 +1,7 @@
 package com.iesfa.flappy.actors;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -17,6 +18,15 @@ import com.iesfa.flappy.extra.Utils;
 public class Bird extends Actor {
 
 
+    //Todo 1. Creamos diferentes estados del juego y la velocidad de impulso que se le dará al pj
+    private static final int STATE_NORMAL = 0;
+    private static final int STATE_DEAD = 1;
+    private static final float JUMP_SPEED = 5f;
+
+    //Todo 2.Controlamos el estado con un atributo
+    private int state;
+
+
     private Animation<TextureRegion> birdAnimation;
     private Vector2 position;
 
@@ -26,23 +36,23 @@ public class Bird extends Actor {
     private float stateTime;
 
 
-    //5. Creamos el atributo para el cuerpo del pájaro.
     private Body body;
-    //6. Creamos el atributo para la forma del pájaro.
+
     private Fixture fixture;
 
-    //4. Modificamos el constructor para pasarle la instancia del mundo físico.
+
     public Bird(World world,Animation<TextureRegion> animation, Vector2 position) {
         this.birdAnimation = animation;
         this.position      = position;
         this.world         = world;
         stateTime = 0f;
+        state = STATE_NORMAL;
         createBody();
         createFixture();
 
     }
 
-    //7. Creamos un método para crear el cuerpo
+
     public void createBody(){
         //Creamos BodyDef
         BodyDef bodyDef = new BodyDef();
@@ -54,19 +64,20 @@ public class Bird extends Actor {
 
         //createBody de mundo
         this.body = this.world.createBody(bodyDef);
+        //setUserData  --> Utils -> identificadores de cuerpos
+        this.body.setUserData(Utils.USER_BIRD);
     }
 
-    //8. Creamos un método para crear la forma
+
     public void createFixture(){
         //Shape
         CircleShape circle = new CircleShape();
         //radio
-        circle.setRadius(0.3f);
+        circle.setRadius(0.25f);
 
         //createFixture
-        this.fixture = this.body.createFixture(circle,8);
-        //setUserData  --> Utils -> identificadores de cuerpos
-        this.fixture.setUserData(Utils.USER_BIRD);
+        this.fixture = this.body.createFixture(circle,3);
+
         //dispose
         circle.dispose();
     }
@@ -76,6 +87,12 @@ public class Bird extends Actor {
     @Override
     public void act(float delta) {
 
+        //Todo 3. Controlamos el toque de la pantalla
+        boolean jump = Gdx.input.justTouched();
+        //Todo 4. Si el estado es normal, se le da un impulso
+        if(jump && this.state == STATE_NORMAL){
+            this.body.setLinearVelocity(0, JUMP_SPEED);
+        }
     }
 
     @Override
@@ -88,7 +105,7 @@ public class Bird extends Actor {
 
     }
 
-    //9.Nos creamos un metodo detach que nos ayudará a liberar los recursos de body y fixture
+
     public void detach(){
 
         //(body) destroyFixture
