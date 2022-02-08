@@ -18,6 +18,9 @@ public class Pipes extends Actor {
 
     private static final float PIPE_WIDTH = 0.85f;
     private static final float PIPE_HEIGHT = 4f;
+    private static final float SPACE_BETWEEN_PIPES = 2f;
+    private static final float SPEED = -2f;
+
 
     //Todo 1. Creamos textura,cuerpo y fixture para la tubería de arriba
     private TextureRegion pipeDownTR;
@@ -51,6 +54,7 @@ public class Pipes extends Actor {
         def.type = BodyDef.BodyType.KinematicBody;
         bodyDown = world.createBody(def);
         bodyDown.setUserData(USER_PIPE_DOWN);
+        bodyDown.setLinearVelocity(SPEED,0);
 
     }
 
@@ -58,10 +62,11 @@ public class Pipes extends Actor {
     private void createBodyPipeTop() {
         BodyDef def = new BodyDef();
         def.position.x = bodyDown.getPosition().x;  //
-        //def.position.y =   //
+        def.position.y =   bodyDown.getPosition().y + PIPE_HEIGHT + SPACE_BETWEEN_PIPES;
         def.type = BodyDef.BodyType.KinematicBody;
         bodyTop = world.createBody(def);
         bodyTop.setUserData(USER_PIPE_TOP);
+
     }
 
 
