@@ -41,6 +41,7 @@ public class Pipes extends Actor {
         createFixture();
     }
 
+    //Todo **alumno**: crear body y forma del contador y posicionarlo en el mundo
 
 
 
@@ -57,7 +58,7 @@ public class Pipes extends Actor {
     private void createBodyPipeTop() {
         BodyDef def = new BodyDef();
         def.position.x = bodyDown.getPosition().x;  //
-        def.position.y = bodyDown.getPosition().y + PIPE_HEIGHT;  //
+        //def.position.y =   //
         def.type = BodyDef.BodyType.KinematicBody;
         bodyTop = world.createBody(def);
         bodyTop.setUserData(USER_PIPE_TOP);
