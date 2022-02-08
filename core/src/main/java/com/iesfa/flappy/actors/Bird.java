@@ -18,12 +18,12 @@ import com.iesfa.flappy.extra.Utils;
 public class Bird extends Actor {
 
 
-    //Todo 1. Creamos diferentes estados del juego y la velocidad de impulso que se le dará al pj
+
     private static final int STATE_NORMAL = 0;
     private static final int STATE_DEAD = 1;
     private static final float JUMP_SPEED = 5f;
 
-    //Todo 2.Controlamos el estado con un atributo
+
     private int state;
 
 
@@ -87,9 +87,9 @@ public class Bird extends Actor {
     @Override
     public void act(float delta) {
 
-        //Todo 3. Controlamos el toque de la pantalla
+
         boolean jump = Gdx.input.justTouched();
-        //Todo 4. Si el estado es normal, se le da un impulso
+
         if(jump && this.state == STATE_NORMAL){
             this.body.setLinearVelocity(0, JUMP_SPEED);
         }

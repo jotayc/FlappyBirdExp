@@ -30,8 +30,6 @@ import sun.tools.jar.Main;
 
 public class GameScreen extends BaseScreen {
 
-
-
     private Stage stage;
 
     private Image background;
@@ -72,10 +70,12 @@ public class GameScreen extends BaseScreen {
         addBackground();
         Animation<TextureRegion> birdSprite = mainGame.assetManager.getBirdAnimation();
         TextureRegion pipeDownTexture = mainGame.assetManager.getPipeDownTR();
-
+        //Todo 7 Creamos la textura, la pasamos al constructor
+        TextureRegion pipeTopTexture = mainGame.assetManager.getPipeUpTR();
         this.bird = new Bird(this.world,birdSprite, new Vector2(1.35f ,4.75f ));
-        //Todo 12. Creamos una instancia de Pipes y se lo pasamos al escenario
-        this.pipes = new Pipes(this.world, pipeDownTexture,new Vector2(3.75f,2f));
+
+        //Como ambas tuberías están en la misma clase solo debemos instanciar un objeto
+        this.pipes = new Pipes(this.world, pipeDownTexture, pipeTopTexture,new Vector2(3.75f,2f)); //Posición de la tubería inferior
 
         this.stage.addActor(this.bird);
         this.stage.addActor(this.pipes);
@@ -126,7 +126,7 @@ public class GameScreen extends BaseScreen {
         //remove
         this.bird.remove();
 
-        //Todo 13. liberamos el objeto pipe
+
         this.pipes.detach();
         this.pipes.remove();
     }
