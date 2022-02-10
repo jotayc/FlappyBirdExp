@@ -98,7 +98,7 @@ public class GameScreen extends BaseScreen {
         Body body = world.createBody(bodyDef);
 
         EdgeShape edge = new EdgeShape();
-        edge.set(0,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH);
+        //Posición de los vertices.
         body.createFixture(edge, 1);
         edge.dispose();
     }
