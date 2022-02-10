@@ -26,21 +26,20 @@ public class Bird extends Actor {
 
     private int state;
 
-
     private Animation<TextureRegion> birdAnimation;
-    private Vector2 position;
+    //Todo 3. Creamos sonido para el objeto bird.
 
+    private Vector2 position;
 
     private World world;
 
     private float stateTime;
 
-
     private Body body;
 
     private Fixture fixture;
 
-
+    //Todo 4. Modificar el constructor para añadir el recurso del sonido.
     public Bird(World world,Animation<TextureRegion> animation, Vector2 position) {
         this.birdAnimation = animation;
         this.position      = position;
@@ -91,6 +90,8 @@ public class Bird extends Actor {
         boolean jump = Gdx.input.justTouched();
 
         if(jump && this.state == STATE_NORMAL){
+            //Todo 5. Cuando salte, reproducimos el sonido
+
             this.body.setLinearVelocity(0, JUMP_SPEED);
         }
     }
@@ -101,8 +102,6 @@ public class Bird extends Actor {
         batch.draw(this.birdAnimation.getKeyFrame(stateTime,true),getX(),getY(), 0.6f,0.5f);
 
         stateTime += Gdx.graphics.getDeltaTime();
-
-
     }
 
 

@@ -18,6 +18,8 @@ public class Utils {
     public static final String BACKGROUND_IMAGE = "flappy_background";
     public static final String PIPE_DAWN = "pipeDown";
     public static final String PIPE_UP = "pipeUp";
+    //Todo 1. Creamos identificador para los sonidos
+
 
     //Todo alumno: Crea el resto de identificadores
 

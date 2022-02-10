@@ -23,7 +23,7 @@ public class Pipes extends Actor {
     private static final float SPEED = -2f;
 
 
-    //Todo 1. Creamos textura,cuerpo y fixture para la tubería de arriba
+
     private TextureRegion pipeDownTR;
     private TextureRegion pipeTopTR;
 
@@ -37,7 +37,7 @@ public class Pipes extends Actor {
 
     private World world;
 
-    //Todo 2. Añadimos la textura para la tubería de arriba al constructor
+
     public Pipes(World world, TextureRegion trpDown, TextureRegion trpTop, Vector2 position) {
         this.world = world;
         this.pipeDownTR = trpDown;
@@ -60,7 +60,7 @@ public class Pipes extends Actor {
 
     }
 
-    //Todo 3. Creamos el método para crear el cuerpo de la tubería de arriba
+
     private void createBodyPipeTop() {
         BodyDef def = new BodyDef();
         def.position.x = bodyDown.getPosition().x;  //
@@ -79,13 +79,12 @@ public class Pipes extends Actor {
         shape.setAsBox(PIPE_WIDTH /2, PIPE_HEIGHT /2 );
 
         this.fixtureDown = bodyDown.createFixture(shape,8);
-        //Todo 4.Como es la misma figura podemos aprovechar el método y la forma ya creada
-        // para añadirla a la tubería de arriba
+
         this.fixtureTop = bodyTop.createFixture(shape, 8);
         shape.dispose();
     }
 
-    //Todo **alumno**: crear body y forma del contador y posicionarlo en el mundo
+
     public void createCounter(){
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(bodyDown.getPosition().x, (bodyDown.getPosition().y + bodyTop.getPosition().y) / 2f);
@@ -113,7 +112,7 @@ public class Pipes extends Actor {
         batch.draw(this.pipeDownTR, bodyDown.getPosition().x - PIPE_WIDTH/2,bodyDown.getPosition().y - PIPE_HEIGHT/2,
                 PIPE_WIDTH,PIPE_HEIGHT);
 
-        //Todo 5. Dibujamos la imagen de la tubería superior similar al resto de elementos
+
         batch.draw(this.pipeTopTR, bodyTop.getPosition().x - PIPE_WIDTH/2,bodyTop.getPosition().y - PIPE_HEIGHT/2,
                 PIPE_WIDTH,PIPE_HEIGHT);
     }
@@ -123,7 +122,7 @@ public class Pipes extends Actor {
         bodyDown.destroyFixture(fixtureDown);
         world.destroyBody(bodyDown);
 
-        //Todo 6. Destruimos los recursos
+
         bodyTop.destroyFixture(fixtureTop);
         world.destroyBody(bodyTop);
     }

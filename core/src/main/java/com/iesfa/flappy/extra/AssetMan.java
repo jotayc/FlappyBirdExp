@@ -25,6 +25,10 @@ public class AssetMan {
         this.assetManager = new AssetManager();
 
         assetManager.load(ATLAS_MAP, TextureAtlas.class);
+        //Todo 2. Cargar los sonidos desde el assetmanager
+          //2.1 Sound
+          //2.2 Music
+
         assetManager.finishLoading();
 
         textureAtlas = assetManager.get(ATLAS_MAP);

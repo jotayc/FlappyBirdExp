@@ -42,7 +42,7 @@ public class GameScreen extends BaseScreen {
 
     private World world;
 
-
+    //Todo 8. Creamos objeto MusicGame para la musica de fondo
 
 
     private Box2DDebugRenderer debugRenderer;
@@ -57,6 +57,7 @@ public class GameScreen extends BaseScreen {
         FitViewport fitViewport = new FitViewport(WORLD_WIDTH,WORLD_HEIGTH);
         this.stage = new Stage(fitViewport);
 
+        //Todo 9. Inicializamos el objeto desde la instancia desde assetMan
 
         this.ortCamera = (OrthographicCamera) this.stage.getCamera();
         this.debugRenderer = new Box2DDebugRenderer();
@@ -66,7 +67,7 @@ public class GameScreen extends BaseScreen {
 
 
 
-
+    //Todo 12 **Mejora de código** Organizar código para bird y pipes
     @Override
     public void show() {
         addBackground();
@@ -75,8 +76,10 @@ public class GameScreen extends BaseScreen {
 
         Animation<TextureRegion> birdSprite = mainGame.assetManager.getBirdAnimation();
         TextureRegion pipeDownTexture = mainGame.assetManager.getPipeDownTR();
-        //Todo 7 Creamos la textura, la pasamos al constructor
+
         TextureRegion pipeTopTexture = mainGame.assetManager.getPipeUpTR();
+
+        //Todo 7. Le pasamos al constructor el sonido
         this.bird = new Bird(this.world,birdSprite, new Vector2(1.35f ,4.75f ));
 
         //Como ambas tuberías están en la misma clase solo debemos instanciar un objeto
@@ -84,9 +87,13 @@ public class GameScreen extends BaseScreen {
 
         this.stage.addActor(this.bird);
         this.stage.addActor(this.pipes);
+
+        //Todo 10. Reproducimos la música cuando aparezca la pantalla
+           //play
+           //loop
     }
 
-    //Todo alumno: Crear un método que añada el techo con la clase EdgeShape
+
     public void addRoof(){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -98,8 +105,6 @@ public class GameScreen extends BaseScreen {
         edge.dispose();
     }
 
-
-    //Todo alumno: Crear un método que añada el 'cuerpo' y la 'forma' del suelo
     private void addFloor() {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(WORLD_WIDTH / 2f, 0.6f);
@@ -145,6 +150,9 @@ public class GameScreen extends BaseScreen {
 
         this.pipes.detach();
         this.pipes.remove();
+
+
+        //Todo 11.Paramos la música cuando se oculte la pantalla
     }
 
     @Override
