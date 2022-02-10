@@ -23,7 +23,6 @@ public class Pipes extends Actor {
     private static final float SPEED = -2f;
 
 
-
     private TextureRegion pipeDownTR;
     private TextureRegion pipeTopTR;
 
@@ -96,7 +95,7 @@ public class Pipes extends Actor {
         polygonShape.setAsBox(0.1f,0.90f);
 
         this.fixtureCounter = bodyCounter.createFixture(polygonShape,3);
-          // Sensor
+        this.fixtureCounter.setSensor(true);  // Sensor
         this.fixtureCounter.setUserData(USER_COUNTER);
         polygonShape.dispose();
     }

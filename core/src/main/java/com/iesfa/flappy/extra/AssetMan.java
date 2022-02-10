@@ -6,10 +6,14 @@ package com.iesfa.flappy.extra;
 
 import static com.iesfa.flappy.extra.Utils.ATLAS_MAP;
 import static com.iesfa.flappy.extra.Utils.BACKGROUND_IMAGE;
+import static com.iesfa.flappy.extra.Utils.MUSIC_BG;
 import static com.iesfa.flappy.extra.Utils.PIPE_DAWN;
 import static com.iesfa.flappy.extra.Utils.PIPE_UP;
+import static com.iesfa.flappy.extra.Utils.SOUND_JUMP;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -27,7 +31,9 @@ public class AssetMan {
         assetManager.load(ATLAS_MAP, TextureAtlas.class);
         //Todo 2. Cargar los sonidos desde el assetmanager
           //2.1 Sound
+        assetManager.load(SOUND_JUMP, Sound.class);
           //2.2 Music
+        assetManager.load(MUSIC_BG, Music.class);
 
         assetManager.finishLoading();
 
@@ -52,5 +58,13 @@ public class AssetMan {
 
     public TextureRegion getPipeUpTR() {
         return  this.textureAtlas.findRegion(PIPE_UP);
+    }
+
+    public Sound getJumpSound(){
+        return this.assetManager.get(SOUND_JUMP);
+    }
+
+    public Music getMusicBG(){
+        return this.assetManager.get(MUSIC_BG);
     }
 }

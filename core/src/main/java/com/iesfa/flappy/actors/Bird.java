@@ -2,6 +2,7 @@ package com.iesfa.flappy.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -28,7 +29,7 @@ public class Bird extends Actor {
 
     private Animation<TextureRegion> birdAnimation;
     //Todo 3. Creamos sonido para el objeto bird.
-
+    private Sound jumpSound;
     private Vector2 position;
 
     private World world;
@@ -40,10 +41,11 @@ public class Bird extends Actor {
     private Fixture fixture;
 
     //Todo 4. Modificar el constructor para añadir el recurso del sonido.
-    public Bird(World world,Animation<TextureRegion> animation, Vector2 position) {
+    public Bird(World world,Animation<TextureRegion> animation,Sound sound, Vector2 position) {
         this.birdAnimation = animation;
         this.position      = position;
         this.world         = world;
+        this.jumpSound = sound;
         stateTime = 0f;
         state = STATE_NORMAL;
         createBody();
@@ -91,7 +93,7 @@ public class Bird extends Actor {
 
         if(jump && this.state == STATE_NORMAL){
             //Todo 5. Cuando salte, reproducimos el sonido
-
+            this.jumpSound.play();
             this.body.setLinearVelocity(0, JUMP_SPEED);
         }
     }

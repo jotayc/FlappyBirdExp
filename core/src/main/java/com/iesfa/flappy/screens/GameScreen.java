@@ -4,6 +4,8 @@ import static com.iesfa.flappy.extra.Utils.*;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -46,7 +48,7 @@ public class GameScreen extends BaseScreen {
     private World world;
 
     //Todo 8. Creamos objeto MusicGame para la musica de fondo
-
+    private Music musicbg;
 
     private Box2DDebugRenderer debugRenderer;
     private OrthographicCamera ortCamera;
@@ -61,10 +63,9 @@ public class GameScreen extends BaseScreen {
         this.stage = new Stage(fitViewport);
 
         //Todo 9. Inicializamos el objeto desde la instancia desde assetMan
-
+        this.musicbg = this.mainGame.assetManager.getMusicBG();
         this.ortCamera = (OrthographicCamera) this.stage.getCamera();
         this.debugRenderer = new Box2DDebugRenderer();
-
 
     }
 
@@ -78,12 +79,13 @@ public class GameScreen extends BaseScreen {
         addRoof();
 
         Animation<TextureRegion> birdSprite = mainGame.assetManager.getBirdAnimation();
+        Sound soundBird = this.mainGame.assetManager.getJumpSound();
         TextureRegion pipeDownTexture = mainGame.assetManager.getPipeDownTR();
 
         TextureRegion pipeTopTexture = mainGame.assetManager.getPipeUpTR();
 
         //Todo 7. Le pasamos al constructor el sonido
-        this.bird = new Bird(this.world,birdSprite, new Vector2(1.35f ,4.75f ));
+        this.bird = new Bird(this.world,birdSprite, soundBird, new Vector2(1.35f ,4.75f ));
 
         //Como ambas tuberías están en la misma clase solo debemos instanciar un objeto
         //Todo alumno: Posicion aleatoria de las tuberías
@@ -94,8 +96,13 @@ public class GameScreen extends BaseScreen {
         this.stage.addActor(this.pipes);
 
         //Todo 10. Reproducimos la música cuando aparezca la pantalla
-           //play
-           //loop
+        //loop
+        this.musicbg.setLooping(true);
+        //play
+        this.musicbg.play();
+
+
+
     }
 
 
@@ -158,6 +165,7 @@ public class GameScreen extends BaseScreen {
 
 
         //Todo 11.Paramos la música cuando se oculte la pantalla
+        this.musicbg.stop();
     }
 
     @Override

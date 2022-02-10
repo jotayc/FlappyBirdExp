@@ -18,6 +18,9 @@ public class Utils {
     public static final String BACKGROUND_IMAGE = "flappy_background";
     public static final String PIPE_DAWN = "pipeDown";
     public static final String PIPE_UP = "pipeUp";
+    public static final String SOUND_JUMP = "jump.mp3";
+    public static final String MUSIC_BG = "musicbg.mp3";
+
     //Todo 1. Creamos identificador para los sonidos
 
 
