@@ -20,7 +20,7 @@ public class Pipes extends Actor {
     private static final float PIPE_WIDTH = 0.85f;
     private static final float PIPE_HEIGHT = 4f;
     private static final float SPACE_BETWEEN_PIPES = 2f;
-    private static final float SPEED = -2f;
+    private static final float SPEED = 0f;
 
 
     //Todo 1. Creamos textura,cuerpo y fixture para la tubería de arriba
@@ -97,7 +97,7 @@ public class Pipes extends Actor {
         polygonShape.setAsBox(0.1f,0.90f);
 
         this.fixtureCounter = bodyCounter.createFixture(polygonShape,3);
-          // Sensor
+        this.fixtureCounter.setSensor(true); // Sensor
         this.fixtureCounter.setUserData(USER_COUNTER);
         polygonShape.dispose();
     }

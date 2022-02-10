@@ -84,8 +84,8 @@ public class GameScreen extends BaseScreen {
 
         //Como ambas tuberías están en la misma clase solo debemos instanciar un objeto
         //Todo alumno: Posicion aleatoria de las tuberías
-        //float posRandomY = MathUtils.random(0f,2f);
-        this.pipes = new Pipes(this.world, pipeDownTexture, pipeTopTexture,new Vector2(3.75f,2f)); //Posición de la tubería inferior
+        float posRandomY = MathUtils.random(0f,2f);
+        this.pipes = new Pipes(this.world, pipeDownTexture, pipeTopTexture,new Vector2(3.75f,posRandomY)); //Posición de la tubería inferior
 
         this.stage.addActor(this.bird);
         this.stage.addActor(this.pipes);
@@ -98,7 +98,7 @@ public class GameScreen extends BaseScreen {
         Body body = world.createBody(bodyDef);
 
         EdgeShape edge = new EdgeShape();
-        //Posición de los vertices.
+        edge.set(0,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH);
         body.createFixture(edge, 1);
         edge.dispose();
     }
