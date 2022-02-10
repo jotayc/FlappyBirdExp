@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -26,6 +27,8 @@ import com.iesfa.flappy.actors.Pipes;
 import com.iesfa.flappy.extra.Utils;
 
 import org.w3c.dom.Text;
+
+import java.util.Random;
 
 import sun.tools.jar.Main;
 
@@ -83,6 +86,8 @@ public class GameScreen extends BaseScreen {
         this.bird = new Bird(this.world,birdSprite, new Vector2(1.35f ,4.75f ));
 
         //Como ambas tuberías están en la misma clase solo debemos instanciar un objeto
+        //Todo alumno: Posicion aleatoria de las tuberías
+        //float posRandomY = MathUtils.random(0f,2f);
         this.pipes = new Pipes(this.world, pipeDownTexture, pipeTopTexture,new Vector2(3.75f,2f)); //Posición de la tubería inferior
 
         this.stage.addActor(this.bird);
