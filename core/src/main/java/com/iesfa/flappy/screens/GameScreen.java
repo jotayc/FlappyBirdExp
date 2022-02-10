@@ -13,6 +13,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,10 +36,12 @@ public class GameScreen extends BaseScreen {
 
     private Image background;
 
+
     private Bird bird;
     private Pipes pipes;
 
     private World world;
+
 
 
 
@@ -65,9 +69,10 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public void show() {
-
-        addFloor();
         addBackground();
+        addFloor();
+        addRoof();
+
         Animation<TextureRegion> birdSprite = mainGame.assetManager.getBirdAnimation();
         TextureRegion pipeDownTexture = mainGame.assetManager.getPipeDownTR();
         //Todo 7 Creamos la textura, la pasamos al constructor
@@ -82,6 +87,17 @@ public class GameScreen extends BaseScreen {
     }
 
     //Todo alumno: Crear un método que añada el techo con la clase EdgeShape
+    public void addRoof(){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        Body body = world.createBody(bodyDef);
+
+        EdgeShape edge = new EdgeShape();
+        edge.set(0,WORLD_HEIGTH,WORLD_WIDTH,WORLD_HEIGTH);
+        body.createFixture(edge, 1);
+        edge.dispose();
+    }
+
 
     //Todo alumno: Crear un método que añada el 'cuerpo' y la 'forma' del suelo
     private void addFloor() {

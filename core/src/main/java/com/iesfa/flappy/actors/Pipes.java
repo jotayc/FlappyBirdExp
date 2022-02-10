@@ -1,5 +1,6 @@
 package com.iesfa.flappy.actors;
 
+import static com.iesfa.flappy.extra.Utils.USER_COUNTER;
 import static com.iesfa.flappy.extra.Utils.USER_PIPE_DOWN;
 import static com.iesfa.flappy.extra.Utils.USER_PIPE_TOP;
 
@@ -28,9 +29,11 @@ public class Pipes extends Actor {
 
     private Body bodyDown;
     private Body bodyTop;
+    private Body bodyCounter;
 
     private Fixture fixtureDown;
     private Fixture fixtureTop;
+    private Fixture fixtureCounter;
 
     private World world;
 
@@ -42,9 +45,8 @@ public class Pipes extends Actor {
         createBodyPipeDown(position);
         createBodyPipeTop(); //No se le pasa la posición porque irá en función de la posición de la tubería de abajo
         createFixture();
+        createCounter();
     }
-
-    //Todo **alumno**: crear body y forma del contador y posicionarlo en el mundo
 
 
 
@@ -66,8 +68,10 @@ public class Pipes extends Actor {
         def.type = BodyDef.BodyType.KinematicBody;
         bodyTop = world.createBody(def);
         bodyTop.setUserData(USER_PIPE_TOP);
+        bodyTop.setLinearVelocity(SPEED,0);
 
     }
+
 
 
     private void createFixture() {
@@ -81,6 +85,22 @@ public class Pipes extends Actor {
         shape.dispose();
     }
 
+    //Todo **alumno**: crear body y forma del contador y posicionarlo en el mundo
+    public void createCounter(){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.position.set(bodyDown.getPosition().x, (bodyDown.getPosition().y + bodyTop.getPosition().y) / 2f);
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        this.bodyCounter = this.world.createBody(bodyDef);
+        this.bodyCounter.setLinearVelocity(Pipes.SPEED,0f);
+
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(0.1f,0.90f);
+
+        this.fixtureCounter = bodyCounter.createFixture(polygonShape,3);
+          // Sensor
+        this.fixtureCounter.setUserData(USER_COUNTER);
+        polygonShape.dispose();
+    }
 
     @Override
     public void act(float delta) {

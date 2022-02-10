@@ -28,6 +28,7 @@ public class Utils {
     public static final String USER_FLOOR = "floor";
     public static final String USER_PIPE_DOWN= "pipeDown";
     public static final String USER_PIPE_TOP= "pipeTop";
+    public static final String USER_COUNTER= "pipeTop";
 
 
 }
