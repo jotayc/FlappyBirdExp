@@ -21,10 +21,10 @@ public class Utils {
     public static final String SOUND_JUMP = "jump.mp3";
     public static final String MUSIC_BG = "musicbg.mp3";
 
-    //Todo 1. Creamos identificador para los sonidos
 
 
-    //Todo alumno: Crea el resto de identificadores
+
+
 
 
 

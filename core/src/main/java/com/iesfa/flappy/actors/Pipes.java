@@ -100,6 +100,11 @@ public class Pipes extends Actor {
         polygonShape.dispose();
     }
 
+    //Todo 5
+    public boolean isOutOfScreen(){
+        return this.bodyDown.getPosition().x <= -2f;
+    }
+
     @Override
     public void act(float delta) {
         super.act(delta);

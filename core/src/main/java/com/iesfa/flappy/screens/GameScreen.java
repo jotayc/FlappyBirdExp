@@ -2,14 +2,10 @@ package com.iesfa.flappy.screens;
 
 import static com.iesfa.flappy.extra.Utils.*;
 
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -17,41 +13,37 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.iesfa.flappy.MainGame;
 import com.iesfa.flappy.actors.Bird;
 import com.iesfa.flappy.actors.Pipes;
-import com.iesfa.flappy.extra.Utils;
-
-import org.w3c.dom.Text;
-
-import java.util.Random;
-
-import sun.tools.jar.Main;
 
 
 public class GameScreen extends BaseScreen {
 
+    //Todo 1* Tenemos que crear una constante para indicar cada cuanto tiempo queremos que se cree
+    // una tubería
+    private final float TIME_TO_SPAWN_PIPES = 1.5f;
+    private float timeToCreatePipe;
     private Stage stage;
 
     private Image background;
-
-
     private Bird bird;
-    private Pipes pipes;
 
     private World world;
 
-    //Todo 8. Creamos objeto MusicGame para la musica de fondo
     private Music musicbg;
 
     private Box2DDebugRenderer debugRenderer;
     private OrthographicCamera ortCamera;
+
+    //Todo 1.1* Borramos el atributo unico Pipes, y creamos un array de Pipes. ATENCIÓN SE USA LA CLASE 'Array' de la biblioteca de LIBGDX NO DE JAVA!!!!
+    private Array<Pipes> arrayPipes;
 
     public GameScreen(MainGame mainGame){
         super(mainGame);
@@ -62,7 +54,10 @@ public class GameScreen extends BaseScreen {
         FitViewport fitViewport = new FitViewport(WORLD_WIDTH,WORLD_HEIGTH);
         this.stage = new Stage(fitViewport);
 
-        //Todo 9. Inicializamos el objeto desde la instancia desde assetMan
+        //Todo 1.2 Inicializamos el array y la variable que almacenará el tiempo
+        this.arrayPipes = new Array();
+
+        this.timeToCreatePipe = 0f;
         this.musicbg = this.mainGame.assetManager.getMusicBG();
         this.ortCamera = (OrthographicCamera) this.stage.getCamera();
         this.debugRenderer = new Box2DDebugRenderer();
@@ -77,32 +72,63 @@ public class GameScreen extends BaseScreen {
         addBackground();
         addFloor();
         addRoof();
+        addBird();
 
-        Animation<TextureRegion> birdSprite = mainGame.assetManager.getBirdAnimation();
-        Sound soundBird = this.mainGame.assetManager.getJumpSound();
-        TextureRegion pipeDownTexture = mainGame.assetManager.getPipeDownTR();
-
-        TextureRegion pipeTopTexture = mainGame.assetManager.getPipeUpTR();
-
-        //Todo 7. Le pasamos al constructor el sonido
-        this.bird = new Bird(this.world,birdSprite, soundBird, new Vector2(1.35f ,4.75f ));
-
-        //Como ambas tuberías están en la misma clase solo debemos instanciar un objeto
-        //Todo alumno: Posicion aleatoria de las tuberías
-        //float posRandomY = MathUtils.random(0f,2f);
-        this.pipes = new Pipes(this.world, pipeDownTexture, pipeTopTexture,new Vector2(3.75f,2f)); //Posición de la tubería inferior
-
-        this.stage.addActor(this.bird);
-        this.stage.addActor(this.pipes);
-
-        //Todo 10. Reproducimos la música cuando aparezca la pantalla
         //loop
         this.musicbg.setLooping(true);
         //play
         this.musicbg.play();
 
+    }
 
+    private void addBird(){
+        Animation<TextureRegion> birdSprite = mainGame.assetManager.getBirdAnimation();
+        Sound soundBird = this.mainGame.assetManager.getJumpSound();
+        this.bird = new Bird(this.world,birdSprite, soundBird, new Vector2(1.35f ,4.75f ));
+        this.stage.addActor(this.bird);
+    }
 
+    //Creamos un método para crear Pipes
+    public void addPipes(float delta){
+
+        TextureRegion pipeDownTexture = mainGame.assetManager.getPipeDownTR();
+        TextureRegion pipeTopTexture = mainGame.assetManager.getPipeUpTR();
+
+        //Como ambas tuberías están en la misma clase solo debemos instanciar un objeto
+
+        if(bird.state == Bird.STATE_NORMAL) {
+            //Todo 3. Acumulamos delta hasta que llegue al tiempo que hemos establecido para que cree la siguiente tubería.
+            timeToCreatePipe+=delta;
+            //Todo 4. Si el tiempo acumulado es mayor que el tiempo que hemos establecido, se crea una tubería...
+            if(timeToCreatePipe>=TIME_TO_SPAWN_PIPES) {
+                //Todo 4.1 ... y le restamos el tiempo a la variable acumulada para que vuelva el contador a 0.
+                timeToCreatePipe-= TIME_TO_SPAWN_PIPES;
+                float posRandomY = MathUtils.random(0f, 2f);
+                //Cambiamos la coordenada x para que se cree fuera de la pantalla (5f)
+                Pipes pipes= new Pipes(this.world, pipeDownTexture, pipeTopTexture, new Vector2(5f, posRandomY)); //Posición de la tubería inferior
+                arrayPipes.add(pipes);
+                this.stage.addActor(pipes);
+            }
+        }
+    }
+
+    //Creamos un método para eliminar pipes
+    public void removePipes(){
+        for (Pipes pipe :this.arrayPipes) {
+            //Todo 6. Si el mundo no está bloqueado, es decir, que no esté actualizando la física en ese preciso momento...
+            if(!world.isLocked()) {
+                //Todo 6.1...y la tubería en cuestión está fuera de la pantalla.
+                if (pipe.isOutOfScreen()) {
+                    //Todo 6.2 Eliminamos los recursos
+                    pipe.detach();
+                    //Todo 6.3 La eliminamos del escenario
+                    pipe.remove();
+
+                    //Todo 6.4 La eliminamos del array
+                    arrayPipes.removeValue(pipe,false);
+                }
+            }
+        }
     }
 
 
@@ -140,16 +166,22 @@ public class GameScreen extends BaseScreen {
     @Override
     public void render(float delta) {
 
-        //this.stage.getBatch().setProjectionMatrix(ortCamera.combined);
+        //Todo 7.Añadimos las tuberías en función del tiempo (delta)
+        addPipes(delta);
 
+        //this.stage.getBatch().setProjectionMatrix(ortCamera.combined);
         this.stage.act();
         this.world.step(delta,6,2); //Porqué 6 y 2? Por que así lo dice la documentación.
         this.stage.draw();
+
 
         //Actualizamos la cámara para que aplique cualquier cambio en las matrices internas.
         this.ortCamera.update();
         // Se le pasa el mundo físico y las matrices de la camara (combined)
         this.debugRenderer.render(this.world, this.ortCamera.combined);
+
+        //Todo 8 Final. Eliminamos las tuberías que vayan saliendose de la pantalla
+        removePipes();
     }
 
     @Override
@@ -160,11 +192,6 @@ public class GameScreen extends BaseScreen {
         this.bird.remove();
 
 
-        this.pipes.detach();
-        this.pipes.remove();
-
-
-        //Todo 11.Paramos la música cuando se oculte la pantalla
         this.musicbg.stop();
     }
 

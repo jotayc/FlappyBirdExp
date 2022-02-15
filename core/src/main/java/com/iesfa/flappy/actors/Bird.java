@@ -20,15 +20,15 @@ public class Bird extends Actor {
 
 
 
-    private static final int STATE_NORMAL = 0;
-    private static final int STATE_DEAD = 1;
+    public static final int STATE_NORMAL = 0;
+    public static final int STATE_DEAD = 1;
     private static final float JUMP_SPEED = 5f;
 
 
-    private int state;
+    public int state;
 
     private Animation<TextureRegion> birdAnimation;
-    //Todo 3. Creamos sonido para el objeto bird.
+
     private Sound jumpSound;
     private Vector2 position;
 
@@ -40,7 +40,7 @@ public class Bird extends Actor {
 
     private Fixture fixture;
 
-    //Todo 4. Modificar el constructor para añadir el recurso del sonido.
+
     public Bird(World world,Animation<TextureRegion> animation,Sound sound, Vector2 position) {
         this.birdAnimation = animation;
         this.position      = position;
@@ -92,7 +92,7 @@ public class Bird extends Actor {
         boolean jump = Gdx.input.justTouched();
 
         if(jump && this.state == STATE_NORMAL){
-            //Todo 5. Cuando salte, reproducimos el sonido
+
             this.jumpSound.play();
             this.body.setLinearVelocity(0, JUMP_SPEED);
         }
