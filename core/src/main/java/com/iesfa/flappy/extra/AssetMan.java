@@ -6,15 +6,19 @@ package com.iesfa.flappy.extra;
 
 import static com.iesfa.flappy.extra.Utils.ATLAS_MAP;
 import static com.iesfa.flappy.extra.Utils.BACKGROUND_IMAGE;
+import static com.iesfa.flappy.extra.Utils.FONT_FNT;
+import static com.iesfa.flappy.extra.Utils.FONT_PNG;
 import static com.iesfa.flappy.extra.Utils.MUSIC_BG;
 import static com.iesfa.flappy.extra.Utils.PIPE_DAWN;
 import static com.iesfa.flappy.extra.Utils.PIPE_UP;
 import static com.iesfa.flappy.extra.Utils.SOUND_JUMP;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -66,5 +70,12 @@ public class AssetMan {
 
     public Music getMusicBG(){
         return this.assetManager.get(MUSIC_BG);
+    }
+
+    //Todo 10. Para usar las fuentes previamente las habremos tenido que añadir,
+    // se recomienda usar la aplicación Hiero
+    //Crear en utils las variables para los identificadores de los archivos.
+    public BitmapFont getFont(){
+        return new BitmapFont(Gdx.files.internal(FONT_FNT),Gdx.files.internal(FONT_PNG),false);
     }
 }

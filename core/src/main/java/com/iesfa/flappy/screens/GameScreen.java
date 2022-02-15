@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -42,6 +43,14 @@ public class GameScreen extends BaseScreen {
     private Box2DDebugRenderer debugRenderer;
     private OrthographicCamera ortCamera;
 
+    //TODO 9.INICIO SCORE: Para añadir un texto con la puntuación es necesario una cámara extra,
+    // ya que las fuentes son uno de los pocos elementos que no se pueden añadir en función
+    // de las medidas del mundo, sino que se hará en función de las medidas de la pantalla.
+    // Para ello necesitaremos otra cámara que proyectarán simultaneamente, una el mundo del juego
+    // y otra solo la fuente con la puntuación. Así como crearnos un Bitmap font para manejar el texto
+    private OrthographicCamera fontCamera;
+    private BitmapFont score;
+
     //Todo 1.1* Borramos el atributo unico Pipes, y creamos un array de Pipes. ATENCIÓN SE USA LA CLASE 'Array' de la biblioteca de LIBGDX NO DE JAVA!!!!
     private Array<Pipes> arrayPipes;
 
@@ -62,11 +71,14 @@ public class GameScreen extends BaseScreen {
         this.ortCamera = (OrthographicCamera) this.stage.getCamera();
         this.debugRenderer = new Box2DDebugRenderer();
 
+        prepareScore();
+
+
     }
 
 
 
-    //Todo 12 **Mejora de código** Organizar código para bird y pipes
+    //Todo **Mejora de código** Organizar código para bird y pipes
     @Override
     public void show() {
         addBackground();
@@ -86,6 +98,20 @@ public class GameScreen extends BaseScreen {
         Sound soundBird = this.mainGame.assetManager.getJumpSound();
         this.bird = new Bird(this.world,birdSprite, soundBird, new Vector2(1.35f ,4.75f ));
         this.stage.addActor(this.bird);
+    }
+
+    //Creamos un método para configurar tod o lo relacionado con el texto de la puntuación
+    //Nos acordamos de llamar a dicho método en el constructor
+    private void prepareScore(){
+        //Todo 11. Cargamos la fuente y configuramos la escala (vamos probando el tamaño
+        this.score =  this.mainGame.assetManager.getFont();
+        this.score.getData().setScale(1.2f);
+
+        //Todo 12. Creamos la cámara, y se le da el tamaño de la PANTALLA (EN PIXELES) y luego se actualiza
+        this.fontCamera = new OrthographicCamera();
+        this.fontCamera.setToOrtho(false,SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.fontCamera.update();
+
     }
 
     //Creamos un método para crear Pipes
@@ -169,7 +195,9 @@ public class GameScreen extends BaseScreen {
         //Todo 7.Añadimos las tuberías en función del tiempo (delta)
         addPipes(delta);
 
-        //this.stage.getBatch().setProjectionMatrix(ortCamera.combined);
+        //Todo 13.1 Justo antes de dibujar el mundo, le volvemos a pasar al batch, los datos de
+        // la cámara del mundo, para que vuelva a representar tod o en función del tamaño de este
+        this.stage.getBatch().setProjectionMatrix(ortCamera.combined);
         this.stage.act();
         this.world.step(delta,6,2); //Porqué 6 y 2? Por que así lo dice la documentación.
         this.stage.draw();
@@ -182,6 +210,15 @@ public class GameScreen extends BaseScreen {
 
         //Todo 8 Final. Eliminamos las tuberías que vayan saliendose de la pantalla
         removePipes();
+
+
+        //Todo 13.Cargamos la matriz de proyección con los datos de la cámara de la fuente,
+        // para que proyecte el texto con las dimensiones en píxeles
+        this.stage.getBatch().setProjectionMatrix(this.fontCamera.combined);
+        this.stage.getBatch().begin();
+        this.score.draw(this.stage.getBatch(), ""+arrayPipes.size, SCREEN_WIDTH/2, 725);
+        this.stage.getBatch().end();
+
     }
 
     @Override
