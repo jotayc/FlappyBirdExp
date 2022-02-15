@@ -48,11 +48,11 @@ public class GameScreen extends BaseScreen {
     // de las medidas del mundo, sino que se hará en función de las medidas de la pantalla.
     // Para ello necesitaremos otra cámara que proyectarán simultaneamente, una el mundo del juego
     // y otra solo la fuente con la puntuación. Así como crearnos un Bitmap font para manejar el texto
-    private OrthographicCamera fontCamera;
-    private BitmapFont score;
+    //private OrthographicCamera fontCamera;
+    //private BitmapFont score;
 
     //Todo 1.1* Borramos el atributo unico Pipes, y creamos un array de Pipes. ATENCIÓN SE USA LA CLASE 'Array' de la biblioteca de LIBGDX NO DE JAVA!!!!
-    private Array<Pipes> arrayPipes;
+    //private Array<Pipes> arrayPipes;
 
     public GameScreen(MainGame mainGame){
         super(mainGame);
@@ -64,9 +64,9 @@ public class GameScreen extends BaseScreen {
         this.stage = new Stage(fitViewport);
 
         //Todo 1.2 Inicializamos el array y la variable que almacenará el tiempo
-        this.arrayPipes = new Array();
 
-        this.timeToCreatePipe = 0f;
+        //this.timeToCreatePipe = 0f;
+
         this.musicbg = this.mainGame.assetManager.getMusicBG();
         this.ortCamera = (OrthographicCamera) this.stage.getCamera();
         this.debugRenderer = new Box2DDebugRenderer();
@@ -104,13 +104,10 @@ public class GameScreen extends BaseScreen {
     //Nos acordamos de llamar a dicho método en el constructor
     private void prepareScore(){
         //Todo 11. Cargamos la fuente y configuramos la escala (vamos probando el tamaño
-        this.score =  this.mainGame.assetManager.getFont();
-        this.score.getData().setScale(1.2f);
+
 
         //Todo 12. Creamos la cámara, y se le da el tamaño de la PANTALLA (EN PIXELES) y luego se actualiza
-        this.fontCamera = new OrthographicCamera();
-        this.fontCamera.setToOrtho(false,SCREEN_WIDTH, SCREEN_HEIGHT);
-        this.fontCamera.update();
+
 
     }
 
@@ -124,37 +121,37 @@ public class GameScreen extends BaseScreen {
 
         if(bird.state == Bird.STATE_NORMAL) {
             //Todo 3. Acumulamos delta hasta que llegue al tiempo que hemos establecido para que cree la siguiente tubería.
-            timeToCreatePipe+=delta;
+
             //Todo 4. Si el tiempo acumulado es mayor que el tiempo que hemos establecido, se crea una tubería...
-            if(timeToCreatePipe>=TIME_TO_SPAWN_PIPES) {
+
                 //Todo 4.1 ... y le restamos el tiempo a la variable acumulada para que vuelva el contador a 0.
-                timeToCreatePipe-= TIME_TO_SPAWN_PIPES;
+
                 float posRandomY = MathUtils.random(0f, 2f);
                 //Cambiamos la coordenada x para que se cree fuera de la pantalla (5f)
                 Pipes pipes= new Pipes(this.world, pipeDownTexture, pipeTopTexture, new Vector2(5f, posRandomY)); //Posición de la tubería inferior
-                arrayPipes.add(pipes);
+                //arrayPipes.add(pipes);
                 this.stage.addActor(pipes);
-            }
+
         }
     }
 
     //Creamos un método para eliminar pipes
     public void removePipes(){
-        for (Pipes pipe :this.arrayPipes) {
+       // for (Pipes pipe :this.arrayPipes) {
             //Todo 6. Si el mundo no está bloqueado, es decir, que no esté actualizando la física en ese preciso momento...
-            if(!world.isLocked()) {
+
                 //Todo 6.1...y la tubería en cuestión está fuera de la pantalla.
-                if (pipe.isOutOfScreen()) {
+
                     //Todo 6.2 Eliminamos los recursos
-                    pipe.detach();
+
                     //Todo 6.3 La eliminamos del escenario
-                    pipe.remove();
+
 
                     //Todo 6.4 La eliminamos del array
-                    arrayPipes.removeValue(pipe,false);
-                }
-            }
-        }
+
+
+
+        //}
     }
 
 
@@ -193,11 +190,11 @@ public class GameScreen extends BaseScreen {
     public void render(float delta) {
 
         //Todo 7.Añadimos las tuberías en función del tiempo (delta)
-        addPipes(delta);
+
 
         //Todo 13.1 Justo antes de dibujar el mundo, le volvemos a pasar al batch, los datos de
         // la cámara del mundo, para que vuelva a representar tod o en función del tamaño de este
-        this.stage.getBatch().setProjectionMatrix(ortCamera.combined);
+        //this.stage.getBatch().setProjectionMatrix(ortCamera.combined);
         this.stage.act();
         this.world.step(delta,6,2); //Porqué 6 y 2? Por que así lo dice la documentación.
         this.stage.draw();
@@ -209,15 +206,12 @@ public class GameScreen extends BaseScreen {
         this.debugRenderer.render(this.world, this.ortCamera.combined);
 
         //Todo 8 Final. Eliminamos las tuberías que vayan saliendose de la pantalla
-        removePipes();
+
 
 
         //Todo 13.Cargamos la matriz de proyección con los datos de la cámara de la fuente,
         // para que proyecte el texto con las dimensiones en píxeles
-        this.stage.getBatch().setProjectionMatrix(this.fontCamera.combined);
-        this.stage.getBatch().begin();
-        this.score.draw(this.stage.getBatch(), ""+arrayPipes.size, SCREEN_WIDTH/2, 725);
-        this.stage.getBatch().end();
+
 
     }
 
