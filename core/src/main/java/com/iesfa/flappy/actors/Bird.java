@@ -23,7 +23,6 @@ public class Bird extends Actor {
     public static final int STATE_DEAD = 1;
     private static final float JUMP_SPEED = 5f;
 
-
     public int state;
 
     private Animation<TextureRegion> birdAnimation;

@@ -102,7 +102,7 @@ public class Pipes extends Actor {
 
     //Todo 5. Creamos un método que nos diga si el objeto pipes está fuera de la pantalla
     public boolean isOutOfScreen(){
-        return true;
+        return this.bodyDown.getPosition().x <= -2f;
     }
 
     @Override
@@ -129,5 +129,9 @@ public class Pipes extends Actor {
 
         bodyTop.destroyFixture(fixtureTop);
         world.destroyBody(bodyTop);
+
+        bodyCounter.destroyFixture(fixtureCounter);
+        world.destroyBody(bodyCounter);
+
     }
 }
