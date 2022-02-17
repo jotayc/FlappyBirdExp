@@ -64,7 +64,7 @@ public class Bird extends Actor {
         //createBody de mundo
         this.body = this.world.createBody(bodyDef);
         //setUserData  --> Utils -> identificadores de cuerpos
-        this.body.setUserData(Utils.USER_BIRD);
+
     }
 
 
@@ -76,13 +76,16 @@ public class Bird extends Actor {
 
         //createFixture
         this.fixture = this.body.createFixture(circle,3);
-
+        this.fixture.setUserData(Utils.USER_BIRD);
         //dispose
         circle.dispose();
     }
 
     //Todo 1. Creamos un método 'hurt' para cambiar el estado del pájaro cuando este colisione
-
+    public void hurt(){
+        this.state = STATE_DEAD;
+        this.stateTime = 0;
+    }
     @Override
     public void act(float delta) {
 

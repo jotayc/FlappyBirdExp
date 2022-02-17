@@ -105,7 +105,11 @@ public class Pipes extends Actor {
     }
 
     //Todo 2. Creamos un método para detener el movimiento de las tuberías y el contador
-
+    public void stopPipes(){
+        this.bodyDown.setLinearVelocity(0,0);
+        this.bodyTop.setLinearVelocity(0,0);
+        this.bodyCounter.setLinearVelocity(0,0);
+    }
 
     @Override
     public void act(float delta) {

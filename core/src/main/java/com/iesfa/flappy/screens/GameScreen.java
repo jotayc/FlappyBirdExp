@@ -2,8 +2,10 @@ package com.iesfa.flappy.screens;
 
 import static com.iesfa.flappy.extra.Utils.*;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -21,6 +23,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -51,7 +54,7 @@ public class GameScreen extends BaseScreen implements ContactListener {
     private BitmapFont score;
 
     //Todo 3. Creamos una valiabre contador....
-    private int scoreNumer;
+    private int scoreNumber;
 
 
     private Array<Pipes> arrayPipes;
@@ -62,6 +65,7 @@ public class GameScreen extends BaseScreen implements ContactListener {
 
         this.world = new World(new Vector2(0,-10),true);
         //Todo 5. Le pasamos al mundo el objeto que implemente la interfaz contactListener (en este caso será la propia instancia de GameScreen)
+        this.world.setContactListener(this);
 
         FitViewport fitViewport = new FitViewport(WORLD_WIDTH,WORLD_HEIGTH);
         this.stage = new Stage(fitViewport);
@@ -107,7 +111,7 @@ public class GameScreen extends BaseScreen implements ContactListener {
     //Nos acordamos de llamar a dicho método en el constructor
     private void prepareScore(){
         //Todo 3.1 ...Y la inicializamos a 0
-        this.scoreNumer = 0;
+        this.scoreNumber = 0;
         this.score = this.mainGame.assetManager.getFont();
         this.score.getData().scale(1f);
 
@@ -208,7 +212,7 @@ public class GameScreen extends BaseScreen implements ContactListener {
 
         this.stage.getBatch().setProjectionMatrix(this.fontCamera.combined);
         this.stage.getBatch().begin();
-        this.score.draw(this.stage.getBatch(), ""+arrayPipes.size,SCREEN_WIDTH/2, 725);
+        this.score.draw(this.stage.getBatch(), ""+this.scoreNumber,SCREEN_WIDTH/2, 725);
         this.stage.getBatch().end();
 
     }
@@ -218,7 +222,7 @@ public class GameScreen extends BaseScreen implements ContactListener {
         //detach
         this.bird.detach();
         //remove
-        this.bird.remove();
+        //this.bird.remove();
 
         //Todo **alumno** liberar la física tanto del suelo como del techo (el equivalene al detach)
 
@@ -237,23 +241,38 @@ public class GameScreen extends BaseScreen implements ContactListener {
     /// *************** COLISIONES ****************** ///
     /// ********************************************* ///
     //Todo 6. Nos creamos un método auxiliar areColider, que nos ayude a determinar qué objetos han colisionado
-
+    public boolean areColider(Contact contact, Object objA, Object objB){
+        return (contact.getFixtureA().getUserData().equals(objA) && contact.getFixtureB().getUserData().equals(objB)) ||
+                (contact.getFixtureA().getUserData().equals(objB) && contact.getFixtureB().getUserData().equals(objA));
+    }
 
     //Método que se llamará cada vez que se produzca cualquier contacto
     @Override
     public void beginContact(Contact contact) {
         //Todo 7. Si 'han colisionado' el pájaro con el contador sumamos 1 al contador...
-
-
-        //Todo 8 En cualquier otro caso significaría que el pájaro ha colisionado con algún otro elemento y se acaba la partida
-
+        if(areColider(contact,USER_BIRD,USER_COUNTER)){
+            this.scoreNumber++;
+        }else {
+            //Todo 8 En cualquier otro caso significaría que el pájaro ha colisionado con algún otro elemento y se acaba la partida
             //Todo 8.1 Lanzamos el método hurt del pájaro para que se cambie el estado a DEAD
-
+            this.bird.hurt();
             //Todo 8.2 Recorremos el array de Pipes para parar los que se encuentren creados en este momento
-
+            for(Pipes pipe:this.arrayPipes){
+                pipe.stopPipes();
+            }
             //Todo 8.3 Paramos la música
-
+            this.musicbg.stop();
             //Todo 8.4 Se lanza la secuencia de acciones,cuya última será el pasar a la ventana de GameOverScreen
+            this.stage.addAction(Actions.sequence(
+                    Actions.delay(1.5f),
+                    Actions.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            mainGame.setScreen(mainGame.gameOverScreen);
+                        }
+                    })
+            ));
+        }
     }
 
     @Override
