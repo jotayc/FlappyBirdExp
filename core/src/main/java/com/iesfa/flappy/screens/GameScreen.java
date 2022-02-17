@@ -13,7 +13,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -24,11 +28,10 @@ import com.iesfa.flappy.MainGame;
 import com.iesfa.flappy.actors.Bird;
 import com.iesfa.flappy.actors.Pipes;
 
+//Todo 4. Implementamos en GameScreen la interfaz ContactListener
+public class GameScreen extends BaseScreen implements ContactListener {
 
-public class GameScreen extends BaseScreen {
 
-    //Todo 1* Tenemos que crear una constante para indicar cada cuanto tiempo queremos que se cree
-    // una tubería
     private final float TIME_TO_SPAWN_PIPES = 1.5f;
     private float timeToCreatePipe;
     private Stage stage;
@@ -43,15 +46,14 @@ public class GameScreen extends BaseScreen {
     private Box2DDebugRenderer debugRenderer;
     private OrthographicCamera worldCamera;
 
-    //TODO 9.INICIO SCORE: Para añadir un texto con la puntuación es necesario una cámara extra,
-    // ya que las fuentes son uno de los pocos elementos que no se pueden añadir en función
-    // de las medidas del mundo, sino que se hará en función de las medidas de la pantalla.
-    // Para ello necesitaremos otra cámara que proyectarán simultaneamente, una el mundo del juego
-    // y otra solo la fuente con la puntuación. Así como crearnos un Bitmap font para manejar el texto
+
     private OrthographicCamera fontCamera;
     private BitmapFont score;
 
-    //Todo 1.1* Borramos el atributo unico Pipes, y creamos un array de Pipes. ATENCIÓN SE USA LA CLASE 'Array' de la biblioteca de LIBGDX NO DE JAVA!!!!
+    //Todo 3. Creamos una valiabre contador....
+    private int scoreNumer;
+
+
     private Array<Pipes> arrayPipes;
 
     public GameScreen(MainGame mainGame){
@@ -59,11 +61,12 @@ public class GameScreen extends BaseScreen {
 
 
         this.world = new World(new Vector2(0,-10),true);
+        //Todo 5. Le pasamos al mundo el objeto que implemente la interfaz contactListener (en este caso será la propia instancia de GameScreen)
 
         FitViewport fitViewport = new FitViewport(WORLD_WIDTH,WORLD_HEIGTH);
         this.stage = new Stage(fitViewport);
 
-        //Todo 1.2 Inicializamos el array y la variable que almacenará el tiempo
+
         this.arrayPipes = new Array();
         this.timeToCreatePipe = 0f;
 
@@ -78,7 +81,7 @@ public class GameScreen extends BaseScreen {
 
 
 
-    //Todo **Mejora de código** Organizar código para bird y pipes
+
     @Override
     public void show() {
         addBackground();
@@ -103,11 +106,12 @@ public class GameScreen extends BaseScreen {
     //Creamos un método para configurar tod o lo relacionado con el texto de la puntuación
     //Nos acordamos de llamar a dicho método en el constructor
     private void prepareScore(){
-        //Todo 11. Cargamos la fuente y configuramos la escala (vamos probando el tamaño
+        //Todo 3.1 ...Y la inicializamos a 0
+        this.scoreNumer = 0;
         this.score = this.mainGame.assetManager.getFont();
         this.score.getData().scale(1f);
 
-        //Todo 12. Creamos la cámara, y se le da el tamaño de la PANTALLA (EN PIXELES) y luego se actualiza
+
         this.fontCamera = new OrthographicCamera();
         this.fontCamera.setToOrtho(false, SCREEN_WIDTH,SCREEN_HEIGHT);
         this.fontCamera.update();
@@ -123,11 +127,11 @@ public class GameScreen extends BaseScreen {
         //Como ambas tuberías están en la misma clase solo debemos instanciar un objeto
 
         if(bird.state == Bird.STATE_NORMAL) {
-            //Todo 3. Acumulamos delta hasta que llegue al tiempo que hemos establecido para que cree la siguiente tubería.
+
             this.timeToCreatePipe+=delta;
-            //Todo 4. Si el tiempo acumulado es mayor que el tiempo que hemos establecido, se crea una tubería...
+
             if(this.timeToCreatePipe >= TIME_TO_SPAWN_PIPES) {
-                //Todo 4.1 ... y le restamos el tiempo a la variable acumulada para que vuelva el contador a 0.
+
                 this.timeToCreatePipe-=TIME_TO_SPAWN_PIPES;
                 float posRandomY = MathUtils.random(0f, 2f);
                 //Cambiamos la coordenada x para que se cree fuera de la pantalla (5f)
@@ -141,16 +145,10 @@ public class GameScreen extends BaseScreen {
     //Creamos un método para eliminar pipes
     public void removePipes(){
         for (Pipes pipe : this.arrayPipes) {
-            //Todo 6. Si el mundo no está bloqueado, es decir, que no esté actualizando la física en ese preciso momento...
             if(!world.isLocked()) {
-                //Todo 6.1...y la tubería en cuestión está fuera de la pantalla.
                 if(pipe.isOutOfScreen()) {
-                    //Todo 6.2 Eliminamos los recursos
                     pipe.detach();
-                    //Todo 6.3 La eliminamos del escenario
                     pipe.remove();
-
-                    //Todo 6.4 La eliminamos del array
                     arrayPipes.removeValue(pipe,false);
                 }
             }
@@ -192,11 +190,8 @@ public class GameScreen extends BaseScreen {
     @Override
     public void render(float delta) {
 
-        //Todo 7.Añadimos las tuberías en función del tiempo (delta)
         addPipes(delta);
 
-        //Todo 13.1 Justo antes de dibujar el mundo, le volvemos a pasar al batch, los datos de
-        // la cámara del mundo, para que vuelva a representar tod o en función del tamaño de este
         this.stage.getBatch().setProjectionMatrix(worldCamera.combined);
         this.stage.act();
         this.world.step(delta,6,2); //Porqué 6 y 2? Por que así lo dice la documentación.
@@ -208,12 +203,9 @@ public class GameScreen extends BaseScreen {
         // Se le pasa el mundo físico y las matrices de la camara (combined)
         this.debugRenderer.render(this.world, this.worldCamera.combined);
 
-        //Todo 8 Final. Eliminamos las tuberías que vayan saliendose de la pantalla
+
         removePipes();
 
-
-        //Todo 13.Cargamos la matriz de proyección con los datos de la cámara de la fuente,
-        // para que proyecte el texto con las dimensiones en píxeles
         this.stage.getBatch().setProjectionMatrix(this.fontCamera.combined);
         this.stage.getBatch().begin();
         this.score.draw(this.stage.getBatch(), ""+arrayPipes.size,SCREEN_WIDTH/2, 725);
@@ -228,6 +220,7 @@ public class GameScreen extends BaseScreen {
         //remove
         this.bird.remove();
 
+        //Todo **alumno** liberar la física tanto del suelo como del techo (el equivalene al detach)
 
         this.musicbg.stop();
     }
@@ -239,4 +232,45 @@ public class GameScreen extends BaseScreen {
         this.world.dispose();
 
     }
+
+    /// ********************************************* ///
+    /// *************** COLISIONES ****************** ///
+    /// ********************************************* ///
+    //Todo 6. Nos creamos un método auxiliar areColider, que nos ayude a determinar qué objetos han colisionado
+
+
+    //Método que se llamará cada vez que se produzca cualquier contacto
+    @Override
+    public void beginContact(Contact contact) {
+        //Todo 7. Si 'han colisionado' el pájaro con el contador sumamos 1 al contador...
+
+
+        //Todo 8 En cualquier otro caso significaría que el pájaro ha colisionado con algún otro elemento y se acaba la partida
+
+            //Todo 8.1 Lanzamos el método hurt del pájaro para que se cambie el estado a DEAD
+
+            //Todo 8.2 Recorremos el array de Pipes para parar los que se encuentren creados en este momento
+
+            //Todo 8.3 Paramos la música
+
+            //Todo 8.4 Se lanza la secuencia de acciones,cuya última será el pasar a la ventana de GameOverScreen
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+
+    }
+
+
+
 }

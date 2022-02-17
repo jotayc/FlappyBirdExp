@@ -18,7 +18,7 @@ import com.iesfa.flappy.extra.Utils;
 
 public class Bird extends Actor {
 
-    //Todo 0** Hacemos public los estados del pájaro para saber si se ha muerto o no (debería mejorarse)
+
     public static final int STATE_NORMAL = 0;
     public static final int STATE_DEAD = 1;
     private static final float JUMP_SPEED = 5f;
@@ -81,7 +81,7 @@ public class Bird extends Actor {
         circle.dispose();
     }
 
-
+    //Todo 1. Creamos un método 'hurt' para cambiar el estado del pájaro cuando este colisione
 
     @Override
     public void act(float delta) {

@@ -54,7 +54,6 @@ public class Pipes extends Actor {
         def.position.set(position);
         def.type = BodyDef.BodyType.KinematicBody;
         bodyDown = world.createBody(def);
-        bodyDown.setUserData(USER_PIPE_DOWN);
         bodyDown.setLinearVelocity(SPEED,0);
 
     }
@@ -66,7 +65,6 @@ public class Pipes extends Actor {
         def.position.y =   bodyDown.getPosition().y + PIPE_HEIGHT + SPACE_BETWEEN_PIPES;
         def.type = BodyDef.BodyType.KinematicBody;
         bodyTop = world.createBody(def);
-        bodyTop.setUserData(USER_PIPE_TOP);
         bodyTop.setLinearVelocity(SPEED,0);
 
     }
@@ -78,8 +76,9 @@ public class Pipes extends Actor {
         shape.setAsBox(PIPE_WIDTH /2, PIPE_HEIGHT /2 );
 
         this.fixtureDown = bodyDown.createFixture(shape,8);
-
+        this.fixtureDown.setUserData(USER_PIPE_DOWN);
         this.fixtureTop = bodyTop.createFixture(shape, 8);
+        this.fixtureTop.setUserData(USER_PIPE_TOP);
         shape.dispose();
     }
 
@@ -100,10 +99,13 @@ public class Pipes extends Actor {
         polygonShape.dispose();
     }
 
-    //Todo 5. Creamos un método que nos diga si el objeto pipes está fuera de la pantalla
+
     public boolean isOutOfScreen(){
         return this.bodyDown.getPosition().x <= -2f;
     }
+
+    //Todo 2. Creamos un método para detener el movimiento de las tuberías y el contador
+
 
     @Override
     public void act(float delta) {
